@@ -36,8 +36,7 @@ jobs:
           command: bundle exec rails db:migrate
       - run:
           name: test
-          command: |
-            bundle exec rake test
+          command: bundle exec rake test
 
   deploy:
     docker:
@@ -49,6 +48,11 @@ jobs:
       - setup_remote_docker:
           version: 19.03.13
       - heroku/install
+      - run:
+          name: debug
+          command: |
+            pwd
+            ls
       - heroku/push-docker-image:
           process-types: web
           recursive: true
