@@ -47,11 +47,6 @@ jobs:
           version: 19.03.13
       - heroku/install
       - run:
-          name: debug
-          command: |
-            pwd
-            ls
-      - run:
           name: heroku login
           command: heroku container:login
       - run:
