@@ -1,51 +1,48 @@
-version: 2
+version: 2.1
+orbs:
+  ruby: circleci/ruby@1.1.2
+
 jobs:
   build:
     docker:
       - image: circleci/ruby:2.7
-        environment:
-          - BUNDLER_VERSION: 2.1.4
-          - RAILS_ENV: 'test'
+    working_directory: ~/rails_docker/src
+    steps:
+      - checkout:
+          path: ~/rails_docker
+      - ruby/install-deps
+
+  test:
+    docker:
+      - image: circleci/ruby:2.7
       - image: circleci/mysql:5.5
         environment:
-          - MYSQL_ALLOW_EMPTY_PASSWORD: 'true'
-          - MYSQL_ROOT_HOST: '127.0.0.1'
-
-    working_directory: ~/rails-docker-kyt  #自身のアプリディレクトリ名を設定
-
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: app_test
+          MYSQL_USER: root
+    environment:
+      BUNDLE_JOBS: "3"
+      BUNDLE_RETRY: "3"
+      APP_DATABASE_HOST: "127.0.0.1"
+      RAILS_ENV: test
+    working_directory: ~/rails_docker/src
     steps:
-      - checkout
-
-    - restore_cache:
-      keys:
-        - v1-dependencies-{{ checksum "Gemfile.lock" }}
-        - v1-dependencies-
-
-    - run:
-      name: install dependencies
-      command: |
-        gem install bundler -v 2.1.4
-        bundle config --local set path 'vendor/bundle'
-        bundle install --jobs=4 --retry=3
-
-    - save_cache:
-      paths:
-        - ./vendor/bundle
-      key: v1-dependencies-{{ checksum "Gemfile.lock" }}
-
-    - run:
-      name: setup database
-      command: |
-        bundle exec rake db:create
-        bundle exec rake db:migrate
-
-    - run:
-      name: run test
-      command: |
-        bundle exec test
+      - checkout:
+          path: ~/rails_docker
+      - ruby/install-deps
+      - run:
+          name: Database setup
+          command: bundle exec rails db:migrate
+      - run:
+          name: test
+          command: |
+            bundle exec rake test
 
 workflows:
   version: 2
-  build-test-deploy:
+  build_and_test:
     jobs:
       - build
+      - test:
+          requires:
+            - build
