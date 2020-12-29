@@ -32,7 +32,7 @@ jobs:
           path: ~/rails_docker
       - ruby/install-deps
       - run:
-          name: Database setup
+          name: database setup
           command: bundle exec rails db:migrate
       - run:
           name: test
@@ -53,9 +53,12 @@ jobs:
           command: |
             pwd
             ls
-      - heroku/push-docker-image:
-          process-types: web
-          recursive: true
+      - run:
+          name: heroku login
+          command: heroku container:login
+      - run:
+          name: push docker image
+          command: heroku container:push web -a $HEROKU_APP_NAME
       - heroku/release-docker-image:
           process-types: web
       - run:
