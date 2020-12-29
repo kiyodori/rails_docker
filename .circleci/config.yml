@@ -47,6 +47,8 @@ jobs:
     steps:
       - checkout:
           path: ~/rails_docker
+      - setup_remote_docker:
+          version: 19.03.13
       - heroku/install
       - heroku/push-docker-image
       - heroku/release-docker-image
