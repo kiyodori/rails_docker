@@ -44,10 +44,13 @@ jobs:
       - image: circleci/ruby:2.7
     steps:
       - checkout
+      - setup_remote_docker:
+          version: 19.03.13
       - heroku/install
       - heroku/push-docker-image:
           process-types: web
-      - heroku/release-docker-image
+      - heroku/release-docker-image:
+          process-types: web
       - run:
           name: Database setup
           command: heroku run bundle exec rake db:migrate RAILS_ENV=production -a $HEROKU_APP_NAME
