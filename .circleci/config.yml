@@ -9,9 +9,9 @@ jobs:
     steps:
       - checkout
       - run:
+        name: cd src
         command: |
           cd src
-      - ruby/install-deps
 
 workflows:
   version: 2
