@@ -41,10 +41,8 @@ jobs:
   deploy:
     docker:
       - image: circleci/ruby:2.7
-    working_directory: ~/rails_docker
     steps:
-      - checkout:
-          path: ~/rails_docker
+      - checkout
       - setup_remote_docker:
           version: 19.03.13
       - heroku/install
@@ -59,10 +57,11 @@ jobs:
       - run:
           name: push docker image
           command: heroku container:push web -a $HEROKU_APP_NAME
-      - heroku/release-docker-image:
-          process-types: web
       - run:
-          name: Database setup
+          name: release docker image
+          command: heroku container:release web -a $HEROKU_APP_NAME
+      - run:
+          name: database setup
           command: heroku run bundle exec rake db:migrate RAILS_ENV=production -a $HEROKU_APP_NAME
 
 workflows:
