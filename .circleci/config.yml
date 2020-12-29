@@ -1,22 +1,25 @@
 version: 2.1
+orbs:
+  ruby: circleci/ruby@1.1.2
+
 jobs:
   build:
     docker:
-      - image: circleci/ruby:2.7-node
+      - image: circleci/ruby:2.7
     working_directory: ~/rails-docker-kyt/src
     steps:
       - checkout:
         path: ~/rails-docker-kyt
       - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "Gemfile.lock" }}
-            - v1-dependencies-
+        keys:
+          - v1-dependencies-{{ checksum "Gemfile.lock" }}
+          - v1-dependencies-
       - run:
-          name: install dependencies
-          command: |
-            gem install bundler -v 2.1.4
-            bundle config --local set path 'vendor/bundle'
-            bundle install --jobs=4 --retry=3
+        name: install dependencies
+        command: |
+          gem install bundler -v 2.1.4
+          bundle config --local set path 'vendor/bundle'
+          bundle install --jobs=4 --retry=3
 
 workflows:
   version: 2
