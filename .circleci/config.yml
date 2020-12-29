@@ -42,9 +42,11 @@ jobs:
   deploy:
     docker:
       - image: buildpack-deps:trusty
+    working_directory: ~/rails_docker
     executor: heroku/default
     steps:
-      - checkout
+      - checkout:
+          path: ~/rails_docker
       - heroku/install
       - heroku/push-docker-image
       - heroku/release-docker-image
@@ -63,6 +65,3 @@ workflows:
       - deploy:
           requires:
             - test
-          filters:
-            branches:
-              only: main
