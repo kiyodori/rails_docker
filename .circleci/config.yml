@@ -9,7 +9,6 @@ jobs:
     working_directory: src
     steps:
       - checkout
-      - cd src
       - ruby/install-deps
 
 workflows:
