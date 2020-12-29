@@ -20,13 +20,6 @@ jobs:
             gem install bundler -v 2.1.4
             bundle config --local set path 'vendor/bundle'
             bundle install --jobs=4 --retry=3
-      - save_cache:
-          paths:
-            - ./vendor/bundle
-          key: v1-dependencies-{{ checksum "Gemfile.lock" }}
-
-      - run: bundle exec rake db:create
-      - run: bundle exec rake db:migrate
 
 workflows:
   version: 2
