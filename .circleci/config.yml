@@ -6,10 +6,10 @@ jobs:
   build:
     docker:
       - image: circleci/ruby:2.7
-    working_directory: ~/rails-docker-kyt/src
+    working_directory: ~/rails_docker/src
     steps:
       - checkout:
-        path: ~/rails-docker-kyt
+        path: ~/rails_docker
       - restore_cache:
         keys:
           - v1-dependencies-{{ checksum "Gemfile.lock" }}
