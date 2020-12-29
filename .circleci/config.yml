@@ -6,8 +6,10 @@ jobs:
   build:
     docker:
       - image: circleci/ruby:2.7-node
+    working_directory: src
     steps:
       - checkout
+      - cd src
       - ruby/install-deps
 
 workflows:
