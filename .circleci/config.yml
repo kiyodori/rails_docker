@@ -8,7 +8,9 @@ jobs:
       - image: circleci/ruby:2.7-node
     steps:
       - checkout
-      - run cd src
+      - run:
+        command: |
+          cd src
       - ruby/install-deps
 
 workflows:
