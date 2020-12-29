@@ -39,14 +39,6 @@ jobs:
           command: |
             bundle exec rake test
 
-  deploy:
-    executor: heroku/default
-    steps:
-      - checkout
-      - heroku/install
-      - heroku/push-docker-image
-      - heroku/release-docker-image
-
 workflows:
   version: 2
   build_test_and_deploy:
@@ -55,7 +47,9 @@ workflows:
       - test:
           requires:
             - build
-      - deploy:
+      - heroku/push-docker-image:
+          post-deploy:
+            - run: heroku run bundle exec rake db:migrate RAILS_ENV=production -a $HEROKU_APP_NAME
           requires:
             - test
           filters:
